@@ -1,9 +1,12 @@
 /**
-*  @package	    Flickrshow
-*  @subpackage	    Javascript
-*  @author		    Ben Sekulowicz-Barclay
-*  @version        7.1
-*/
+ *  @package	Flickrshow
+ *  @subpackage	Javascript
+ *  @author		Ben Sekulowicz-Barclay
+ *  @version    7.1
+ *
+ *  Flickrshow is a Beseku thing licensed under a Creative Commons Attribution 3.0 
+ *  Unported License. For more information visit http://www.flickrshow.com.
+ */
 
 var flickrshow = function (target, settings) {
     
