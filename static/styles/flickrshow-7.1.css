@@ -1,0 +1,272 @@
+/**
+ *  @package	Flickrshow
+ *  @subpackage	CSS
+ *  @author		Ben Sekulowicz-Barclay
+ *  @version    7.1
+ */
+
+@font-face {
+font-family:'Anonymous Pro';
+src:url('../fonts/an-400.eot');
+src:local('☺'), url('../fonts/an-400.woff') format('woff'), url('../fonts/an-400.ttf') format('truetype'), url('../fonts/an-400.svg#webfont5qHDtQc9') format('svg');
+font-weight:400;
+font-style:normal
+}
+
+@font-face {
+font-family:'Proxima Nova';
+src:url('../fonts/pn-400.eot');
+src:local('☺'), url('../fonts/pn-400.woff') format('woff'), url('../fonts/pn-400.ttf') format('truetype'), url('../fonts/pn-400.svg#webfont5qHDtQc9') format('svg');
+font-weight:400;
+font-style:normal
+}
+
+@font-face {
+font-family:'Proxima Nova';
+src:url('../fonts/pn-400-i.eot');
+src:local('☺'), url('../fonts/pn-400-i.woff') format('woff'), url('../fonts/pn-400-i.ttf') format('truetype'), url('../fonts/pn-400-i.svg#webfont5qHDtQc9') format('svg');
+font-weight:400;
+font-style:italic
+}
+
+@font-face {
+font-family:'Proxima Nova';
+src:url('../fonts/pn-500.eot');
+src:local('☺'), url('../fonts/pn-500.woff') format('woff'), url('../fonts/pn-500.ttf') format('truetype'), url('../fonts/pn-500.svg#webfontO9RdvC1L') format('svg');
+font-weight:500;
+font-style:normal
+}
+
+@font-face {
+font-family:'Proxima Nova';
+src:url('../fonts/pn-700.eot');
+src:local('☺'), url('../fonts/pn-700.woff') format('woff'), url('../fonts/pn-700.ttf') format('truetype'), url('../fonts/pn-700.svg#webfontKR6qgy2n') format('svg');
+font-weight:700;
+font-style:normal
+}
+ 
+@media all {
+	html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video {
+	background:transparent;
+	border:0;
+	font-size:100%;
+	margin:0;
+	padding:0;
+	outline:0;
+	vertical-align:baseline
+	}
+
+	body {
+	line-height:1
+	}
+
+	footer,header,section {
+	display:block
+	}
+
+	a {
+	background:transparent;
+	font-size:100%;
+	margin:0;
+	padding:0;
+	vertical-align:baseline
+	}
+
+	abbr[title] {
+	border-bottom:1px dotted inherit;
+	cursor:help
+	}
+
+	table {
+	border-collapse:collapse;
+	border-spacing:0
+	}
+}
+
+@media screen {
+	body {
+    background:#FFF;
+    color:#111
+    }
+
+    h1,h2,p,code,ol,ul,table {
+    display:block;
+    font:normal normal 400 1em/1.5em 'Proxima Nova',sans-serif;
+    margin:1.5em 0
+    }
+
+    h1,h2 {
+    font-weight:700
+    }
+    
+    h2 {
+    color:#BBB;
+    font-size:1.5em;
+    font-weight:700;
+    line-height:1em;
+    margin:0 0 1em
+    }
+    
+    p {
+    margin-right:.375em;
+    text-align:justify
+    }
+
+    li {
+    display:list-item;
+    padding:0
+    }
+
+    a {
+    color:inherit;
+    text-decoration:underline
+    }
+
+    a:hover {
+    text-decoration:none
+    }
+
+    abbr,acronym {
+    border:none;
+    cursor:help
+    }
+
+    a abbr,a acronym {
+    cursor:pointer
+    }
+
+    img {
+    display:block
+    }
+
+    code {
+    font-family:'Anonymous Pro',monospace,sans-serif
+    }
+    
+    .code {
+    list-style:none
+    }
+    
+    .code li {
+    background:#FFE;
+    margin:0;
+    padding:0 .5em
+    }
+    
+    .code li code {
+    display:block;
+    font-size:81.25%;
+    line-height:2em;
+    margin:0;
+    text-shadow:#FFF 1px 1px 0;
+    -moz-text-shadow:#FFF 1px 1px 0;
+    -webkit-text-shadow:#FFF 1px 1px 0
+    }
+    
+    table {
+    border-collapse:collapse;
+    display:table;
+    font-size:87.5%;
+    line-height:1.5em;
+    margin-bottom:1.5em;
+    width:100%
+    }
+    
+    td,
+    th {
+    border:solid .1em #DDD;
+    padding:.375em .75em;
+    text-align:left
+    }
+    
+    table .default-value,
+    table .key,
+    table .type {
+    width:20%
+    }
+    
+    table thead th {
+    background:#EEE;
+    text-shadow:#FFF 1px 1px 0;
+    -moz-text-shadow:#FFF 1px 1px 0;
+    -webkit-text-shadow:#FFF 1px 1px 0
+    }
+    
+    .caption {
+    font-size:81.25%;
+    line-height:1.5em;
+    margin-bottom:1.5em;
+    text-align:center
+    }
+    
+    .example {
+    background:#EEE;
+    height:30em;
+    margin-bottom:1.5em
+    }
+    
+    .example p {
+    color:#333;
+    font-weight:700;
+    padding:14.25em 3em 0;
+    text-align:center;
+    text-shadow:#FFF 1px 1px 0;
+    -moz-text-shadow:#FFF 1px 1px 0;
+    -webkit-text-shadow:#FFF 1px 1px 0
+    }
+    
+    .example .flickrshow-buttons-title {
+    font-family:'Proxima Nova',sans-serif !important;
+    font-weight:400 !important
+    }
+    
+    body #screen {
+    margin:3em;
+    width:45em
+    }
+    
+    body #screen footer {
+    margin-top:6em
+    }
+    
+    body #screen footer p {
+    color:#AAA;
+    font-size:81.25%;
+    line-height:1.5em;
+    margin:0;
+    text-align:center
+    }
+    
+    body #screen header {
+    margin-bottom:3em
+    }
+    
+    body #screen header h1 {
+    font-size:3em;
+    line-height:1.5em;
+    margin:0
+    }
+    
+    body #screen section {
+    margin-bottom:3em
+    }
+}
+
+@media all {
+    /*
+     *  The following styles are applied to <code> by the Google Prettyprint 
+     *  Javascript library.
+     */
+
+    .prettyprint .atn { color:#606 }    
+    .prettyprint .atv { color:#080 }    
+    .prettyprint .com { color:#800 }    
+    .prettyprint .dec { color:#606 }    
+    .prettyprint .kwd { color:#008 }    
+    .prettyprint .lit { color:#066 }    
+    .prettyprint .pln { color:#000 }    
+    .prettyprint .pun { color:#660 }    
+    .prettyprint .str { color:#080 }    
+    .prettyprint .tag { color:#008 }    
+    .prettyprint .typ { color:#606 }
+}

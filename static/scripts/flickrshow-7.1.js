@@ -58,10 +58,12 @@ var flickrshow = function (target, settings) {
             'extras': 'url_s,url_m,url_z,url_l',
             'format': 'json',
             'jsoncallback': 'flickrshow_jsonp_' + _.constants.random,
-            'license': '1,2,3,4,5,6,7',
             'page': _.settings.page,
             'per_page': _.settings.per_page
         };
+        
+        // If the license has been changed from the default ...
+        if (_.settings.license) pms.license = _.settings.license;
 
         // If we are fetching a group's images
         if (_.settings.gallery) {
@@ -82,12 +84,16 @@ var flickrshow = function (target, settings) {
             pms.method = 'flickr.people.getPhotosOf';
             pms.user_id = _.settings.person;
 
-        // If we are fetching images via a standard search
-        } else {
+        // If we are fetching images via a tag search or user search or both
+        } else if (_.settings.tags || _.settings.user) {
             pms.method = 'flickr.photos.search';
 
             if (_.settings.tags) pms.tags = _.settings.tags;
             if (_.settings.user) pms.user_id = _.settings.user;
+        
+        // If we get this far, we are just displaying recent images ...    
+        } else {
+            pms.method = 'flickr.photos.getRecent';
         }
 
         var url = 'http://api.flickr.com/services/rest/?';
@@ -110,10 +116,10 @@ var flickrshow = function (target, settings) {
 
     _.animate = function(element, property, endValue, speed, identifier) {
         // If we already have an animation in this slot, stop it now
-        if ('undefined' !== typeof _.constants.intervals[identifier]) clearInterval(_.constants.intervals[identifier]);
+        if ('undefined' !== typeof _.constants.intervals[identifier]) window.clearInterval(_.constants.intervals[identifier]);
         
         // Define our interval function
-        _.constants.intervals[identifier] = setInterval(function() {
+        _.constants.intervals[identifier] = window.setInterval(function() {
             var currentValue = Math.round(element.style[property].replace(/([a-zA-Z]{2})$/, ''));
             var newValue = Math.round(endValue - currentValue);
             
@@ -124,7 +130,7 @@ var flickrshow = function (target, settings) {
             // If there is no more animation to be had ...
             } else {
                 element.style[property] = endValue + 'px';
-                clearInterval(_.constants.intervals[identifier]);
+                window.clearInterval(_.constants.intervals[identifier]);
             }
         }, speed/1.5);
     };
@@ -142,8 +148,11 @@ var flickrshow = function (target, settings) {
         _.constants.imageCurrent = ((_.constants.imageCurrent - 1) < 0)? _.constants.imageTotal - 1: _.constants.imageCurrent - 1;
         
         // Animate the element and update the details ...
-        _.animate(_.elements.images, 'left', '-' + (_.constants.imageCurrent * _.elements.target.offsetWidth), _.settings.speed, 'i');
+        _.animate(_.elements.images, 'left', '-' + (_.constants.imageCurrent * _.elements.target.offsetWidth), _.constants.speed, 'i');
         _.showTitle();
+        
+        // If there is a user supplied callback for moving, run it now ...
+        if (typeof _.settings.onMove == 'function') _.settings.onMove(_.elements.images.childNodes[_.constants.imageCurrent].childNodes[0]);
     };
 
     /**
@@ -157,15 +166,21 @@ var flickrshow = function (target, settings) {
             _.elements.buttons.childNodes[2].style.backgroundImage = 'url(' + _.constants.base_url + 'static/images/is.png)';
             
             // Create our play interval
-            _.constants.intervals['playing'] = setInterval(function() {
+            _.constants.intervals['playing'] = window.setInterval(function() {
                 _.onClickRight();
             }, _.settings.interval);
+            
+            // If there is a user supplied callback for moving, run it now ...
+            if (typeof _.settings.onPlay == 'function') _.settings.onPlay();
         
         } else {
             _.constants.isPlaying = false;
             _.elements.buttons.childNodes[2].style.backgroundImage = 'url(' + _.constants.base_url + 'static/images/ip.png)';
             
-            clearInterval(_.constants.intervals['playing']);
+            window.clearInterval(_.constants.intervals['playing']);
+            
+            // If there is a user supplied callback for pausing, run it now ...
+            if (typeof _.settings.onPause == 'function') _.settings.onPause(_.elements.images.childNodes[_.constants.imageCurrent].childNodes[0]);
         }
     };
 
@@ -182,8 +197,11 @@ var flickrshow = function (target, settings) {
         _.constants.imageCurrent = ((_.constants.imageCurrent + 2) > _.constants.imageTotal)? 0: _.constants.imageCurrent + 1;
         
         // Animate the element and update the details ...
-        _.animate(_.elements.images, 'left', '-' + (_.constants.imageCurrent * _.elements.target.offsetWidth), _.settings.speed, 'i');
+        _.animate(_.elements.images, 'left', '-' + (_.constants.imageCurrent * _.elements.target.offsetWidth), _.constants.speed, 'i');
         _.showTitle();
+        
+        // If there is a user supplied callback for moving, run it now ...window.clearInterval
+        if (typeof _.settings.onMove == 'function') _.settings.onMove(_.elements.images.childNodes[_.constants.imageCurrent].childNodes[0]);
     };
 
     /**
@@ -242,8 +260,8 @@ var flickrshow = function (target, settings) {
             // If we are autoplaying, do it now ...
             if (_.settings.autoplay === true) _.onClickPlay();
             
-            // If there is a user supplied callback, run it now ...
-            if (typeof _.settings.callback == 'function') _.settings.callback();
+            // If there is a user supplied callback for loading, run it now ...
+            if (typeof _.settings.onLoad == 'function') _.settings.onLoad();
         };
     };
 
@@ -256,10 +274,12 @@ var flickrshow = function (target, settings) {
     _.onLoadJson = function(event) {
         // Remove the script call ... and global callback function
         _.elements.script.parentNode.removeChild(_.elements.script);
-        delete(window['flickrshow_jsonp_' + _.constants.random]);
         
-        // @HACK - If we are fetching photosets, move it into the photos var ...
-        if (event.photoset) event.photos = event.photoset;
+        // @HACK - If we are fetching photosets, move the variables around a bit ...
+        if (event.photoset) {
+            for (var j in event.photoset.photo) event.photoset.photo[j].owner = event.photoset.owner;
+            event.photos = event.photoset;
+        }
         
         // If there is an error in the data ...
         if (event.stat && event.stat == 'fail' || (!event.photos)) {
@@ -275,7 +295,7 @@ var flickrshow = function (target, settings) {
             var img = document.createElement('img');
             img.setAttribute('data-flickr-title', event.photos.photo[i].title);
             img.setAttribute('data-flickr-photo_id', event.photos.photo[i].id);
-            img.setAttribute('data-flickr-user_id', event.photos.photo[i].owner);
+            img.setAttribute('data-flickr-owner', event.photos.photo[i].owner);
             img.setAttribute('rel', i);
             img.style.cursor = 'pointer';
             img.style.display = 'block';
@@ -284,25 +304,24 @@ var flickrshow = function (target, settings) {
             
             // Create our test areas ...
             var areaT = _.elements.target.offsetHeight * _.elements.target.offsetWidth,
-            areaB = event.photos.photo[i].height_l * event.photos.photo[i].width_l,
-            areaO = event.photos.photo[i].height_m * event.photos.photo[i].width_m,
-            areaM = event.photos.photo[i].height_s * event.photos.photo[i].width_s,
-            areaZ = event.photos.photo[i].height_z * event.photos.photo[i].width_z;
+                areaZ = event.photos.photo[i].height_z * event.photos.photo[i].width_z,
+                areaM = event.photos.photo[i].height_m * event.photos.photo[i].width_m,
+                areaS = event.photos.photo[i].height_s * event.photos.photo[i].width_s;
             
             // Ensure we have all the image URLs ...
-            if (!event.photos.photo[i].url_s) event.photos.photo[i].url_s = event.photos.photo[i].url_z;
             if (!event.photos.photo[i].url_m) event.photos.photo[i].url_m = event.photos.photo[i].url_s;
-            if (!event.photos.photo[i].url_l) event.photos.photo[i].url_l = event.photos.photo[i].url_m;
+            if (!event.photos.photo[i].url_z) event.photos.photo[i].url_z = event.photos.photo[i].url_m;
+            if (!event.photos.photo[i].url_l) event.photos.photo[i].url_l = event.photos.photo[i].url_z;
             
             // Update the image source based on the slideshow size ...
-            if (areaT > areaO) {
+            if (areaT > areaZ) {
                 img.src = event.photos.photo[i].url_l + '?' + _.constants.random;
             } else if (areaT > areaM) {
-                img.src = event.photos[i].url_m + '?' + _.constants.random;
-            } else if (areaT > areaZ) {
-                img.src = event.photos[i].url_s + '?' + _.constants.random;
+                img.src = event.photos.photo[i].url_z + '?' + _.constants.random;
+            } else if (areaT > areaS) {
+                img.src = event.photos.photo[i].url_m + '?' + _.constants.random;
             } else {
-                img.src = event.photos[i].src_z + '?' + _.constants.random;
+                img.src = event.photos.photo[i].url_s + '?' + _.constants.random;
             }
             
             // Create our list node object
@@ -375,7 +394,7 @@ var flickrshow = function (target, settings) {
         if ((_.constants.isLoading === true) || (_.constants.isButtonsOpen === false)) { return; }
         
         _.constants.isButtonsOpen = false;
-        _.animate(_.elements.buttons, 'top', _.elements.target.offsetHeight, _.settings.speed, 'buttons');
+        _.animate(_.elements.buttons, 'top', _.elements.target.offsetHeight, _.constants.speed, 'buttons');
     };
 
     /**
@@ -387,7 +406,7 @@ var flickrshow = function (target, settings) {
         if ((_.constants.isLoading === true) || (_.constants.isButtonsOpen === true)) { return; }
         
         _.constants.isButtonsOpen = true;
-        _.animate(_.elements.buttons, 'top', _.elements.target.offsetHeight - 40, _.settings.speed, 'buttons');
+        _.animate(_.elements.buttons, 'top', _.elements.target.offsetHeight - 40, _.constants.speed, 'buttons');
     };
 
     /**
@@ -411,7 +430,7 @@ var flickrshow = function (target, settings) {
         if ('undefined' === typeof img) return;
         
         // Redirect to the image's Flickr page ...
-        window.location = 'http://www.flickr.com/photos/' + img.getAttribute('data-flickr-user_id') + '/' + img.getAttribute('data-flickr-photo_id') + '/';
+        window.location = 'http://www.flickr.com/photos/' + img.getAttribute('data-flickr-owner') + '/' + img.getAttribute('data-flickr-photo_id') + '/';
     };
     
     /**
@@ -435,7 +454,7 @@ var flickrshow = function (target, settings) {
      */
 
     _.constants = {
-        base_url: 'http://192.168.1.9/~ben/personal/flickrshow.com/html/',
+        base_url: 'http://www.flickrshow.com/',
         intervals:[],
         imageCurrent:0,
         imageLoaded:0,
@@ -443,7 +462,8 @@ var flickrshow = function (target, settings) {
         isButtonsOpen:false,
         isLoading:true,
         isPlaying:false,
-        random: Math.floor(Math.random() * 999999999999)
+        random: Math.floor(Math.random() * 999999999999),
+        speed: 100
     };
 
     _.elements = {
@@ -461,16 +481,19 @@ var flickrshow = function (target, settings) {
 
     _.settings = {
         autoplay: false,
-        callback: null,
         gallery: null,
         group: null,
         hide_buttons: false,
         interval: 3000,
+        license: '1,2,3,4,5,6,7',
+        onLoad: null,
+        onMove: null,
+        onPlay: null,
+        onPause: null,
         page: '1',
         person: null,
         per_page: '50',
         set: null,
-        speed: 100,
         tags: null,
         user: null
     };
@@ -515,6 +538,9 @@ var flickrshow = function (target, settings) {
      */
 
     return {
+        constants: _.constants,
+        elements: _.elements,
+        settings: _.settings,                
         left: _.onClickLeft,
         right: _.onClickRight,
         play: _.onClickPlay
@@ -527,7 +553,7 @@ var flickrshow = function (target, settings) {
  */
  
 if (typeof window.jQuery != 'undefined') {
-    jQuery.fn.flickrshow = function(settings) {
-        return new flickrshow(jQuery(this)[0], settings);
+    window.jQuery.fn.flickrshow = function(settings) {
+        return new flickrshow(window.jQuery(this)[0], settings);
     };
 }
