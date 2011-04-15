@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+		<title>Multiple Galleries</title>
+		<script src="static/scripts/external/modernizr-1.6.min.js"></script>
+		<link rel="stylesheet" href="static/styles/flickrshow-7.1.min.css">
+		<style type="text/css" media="screen">
+			.flickrshow {
+				width:800px;
+				height:532px;
+				margin: 40px 0;
+				background-color: gray;
+				color: white;
+			}
+			
+			.flickrshowload {
+				font:normal normal 400 1em/1.5em 'Proxima Nova',sans-serif;
+				text-align:center;
+				font-size: 80px;
+				width:800px;
+				height:120px;
+				background-color: black;
+				position:relative;
+				bottom: 120px;
+				opacity: 0.8;
+				-moz-opacity: 0.8;
+				filter:alpha(opacity=80);
+			}
+			
+			.flickrshow a {
+				text-decoration:none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="screen">
+			<header>
+				<h1>Multiple Galleries</h1>				
+				<p>By Arthur Carabott - <a title="http://www.arthurcarabott.com" href="http://www.arthurcarabott.com">http://www.arthurcarabott.com</a></p>
+			</header>
+			
+			<div id="photo-set-72157626372213059" class="flickrshow">
+				<img src="http://farm6.static.flickr.com/5065/5619440748_9db58764a2_b.jpg?133762584300" alt="images/" width="800" height="532" />
+				<a title="" href="#">
+					<div id="photo-set-load-72157626372213059" class="flickrshowload">
+						Load gallery
+					</div>
+				</a>
+			</div>
+			<div id="photo-set-72157625985306123" class="flickrshow">
+				<img src="http://farm6.static.flickr.com/5132/5468116833_6f70da9ae7_z.jpg?602521631866" alt="images/" width="800" height="532" />
+				<a title="" href="#">
+					<div id="photo-set-load-72157625985306123" class="flickrshowload">
+						Load gallery
+					</div>
+				</a>
+			</div>			
+		</div>
+	<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js'></script>
+	<script>!window.jQuery && document.write('<script src="static/scripts/external/jquery-1.5.2.min.js"><\/script>');</script>
+	<script src="static/scripts/external/prettify/prettify-0.10.js"></script>
+	<script src="static/scripts/flickrshow-7.1.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		var galleries = {};
+	    $('.flickrshow').each(function(index, element) {
+	        var split = $(element).attr('id').split('-');
+            var flickrid = split[split.length-1];
+            
+            galleries[flickrid] = $(element).flickrshow({
+                'set'   : flickrid,
+                'user'  : '54938844@N06'       
+            });
+	    });
+	    
+        $('.flickrshowload').each(function(index, element) {
+            $(element).click(function() {
+                var split = $(element).attr('id').split('-');
+                var flickrid = split[split.length-1];                    
+                
+                galleries[flickrid].load();
+            });            
+        });
+	    
+	</script>
+	
+	</body>
+	
+</html>
