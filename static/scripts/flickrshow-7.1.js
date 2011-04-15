@@ -524,13 +524,18 @@ var flickrshow = function (target, settings) {
     if ('undefined' !== typeof settings.flickr_photoset) _.settings.set = settings.flickr_photoset;
     if ('undefined' !== typeof settings.flickr_tags) _.settings.tags = settings.flickr_tags;
     if ('undefined' !== typeof settings.flickr_user) _.settings.user = settings.flickr_user;
-
+    
+    
     /**
      *  Once we get to this point all that is left is to wait until the DOM is ready
      *  to be manipulated, so we can start building our slideshow in the target element.
      */
-     
-    _.addEvent(window, 'load', _.onLoadWindow);
+    
+    /**
+    *   Arthur Carabott
+    *   Removed loading on window load
+    */ 
+    // _.addEvent(window, 'load', _.onLoadWindow);
 
     /**
      *
@@ -543,7 +548,9 @@ var flickrshow = function (target, settings) {
         settings: _.settings,                
         left: _.onClickLeft,
         right: _.onClickRight,
-        play: _.onClickPlay
+        play: _.onClickPlay,
+        load: _.onLoadWindow    //  Made loading a pubic method. Arthur Carabott
+        
     };
 };
 
